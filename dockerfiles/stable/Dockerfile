@@ -1,18 +1,10 @@
-FROM debian:stretch
-MAINTAINER Liu Chong <mail@clojure.cn>
+FROM ubuntu:14.04
 WORKDIR /root
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
-    build-essential ca-certificates curl file xutils-dev && \
-    rm -rf /var/lib/apt/lists/*
+    build-essential ca-certificates curl file xutils-dev libssl-dev && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get clean
 RUN curl https://sh.rustup.rs -sSf | \
     sh -s -- --default-toolchain stable -y
-ENV PATH=/root/.cargo/bin:$PATH \
-    SSL_VERSION=1.0.2h
-RUN curl https://www.openssl.org/source/openssl-$SSL_VERSION.tar.gz -O && \
-    tar -xzf openssl-$SSL_VERSION.tar.gz && \
-    cd openssl-$SSL_VERSION && ./config && make depend && make install && \
-    cd .. && rm -rf openssl-$SSL_VERSION*
-ENV OPENSSL_LIB_DIR=/usr/local/ssl/lib \
-    OPENSSL_INCLUDE_DIR=/usr/local/ssl/include \
-    OPENSSL_STATIC=1
+ENV PATH=/root/.cargo/bin:$PATH
